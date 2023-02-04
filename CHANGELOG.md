@@ -9,6 +9,7 @@
 - **Removed**
 - **Fixed**
     - dq_SaveFile() and dq_LoadFile() can handle the user clicking Cancel in the File Select dialog.
+    - Typo in 'err' named return value in dq_SaveFile()
 - **Security**
 
 

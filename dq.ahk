@@ -187,7 +187,7 @@ dq_SaveFile(Contents, Filename?, SuggestedName := Format("{1}-{2}-{3}.txt", A_Ye
     FileAppend(Contents, Filename, "UTF-8")
 
     if FileExist(Filename) {
-        return({path: Filename, error: 0})
+        return({path: Filename, err: 0})
     } else {
         return({path: "", err: 1})
     }
