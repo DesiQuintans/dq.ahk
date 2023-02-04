@@ -233,11 +233,11 @@ dq_LoadFile(Filename?, DialogTitle := "", FileFilter := "Plain text (*.txt; *.md
     if not FileExist(Filename) {
         ; If there is no file at the expected path, give the user a chance to retry or exit.
 
-        choice := MsgBox(Format("The file '{1}' does not exist.`nIt may have been moved, renamed, or deleted.`nChoose a different file?", 
+        choice := MsgBox(Format("The file '{1}' does not exist. It may have been moved, renamed, or deleted.`n`nChoose a different file?", 
                       Filename),
-                      "File not found", "OKCancel Icon!")
+                      "File not found", "YesNo Icon!")
 
-        if choice == "OK" {
+        if choice == "Yes" {
             ; The function calls itself again, this time showing the File Select dialog.
             dq_LoadFile(, DialogTitle, FileFilter)
             return
