@@ -168,16 +168,16 @@ dq_SaveFile(Contents, Filename?, SuggestedName := Format("{1}-{2}-{3}.txt", A_Ye
         dq_SaveFile("my contents", "myfile.txt")
     */
 
-    if !IsSet(Filename) {
+    if not IsSet(Filename) or Filename == "" {
         ; Launch the File Select dialog to return a Filename
         Filename := FileSelect("S24", SuggestedName, DialogTitle, FileFilter)
-    }
 
-   if Filename == "" {
-        ; If Filename was supplied, but is blank, then it's likely because the user hit Cancel in 
-        ; the File Select dialog.
-        return({path: "", err: 1})
-    }
+        if Filename == "" {
+            ; If Filename is still blank, it's because the user hit Cancel in 
+            ; the File Select dialog.
+            return({path: "", err: 1})
+        }
+    }   
 
     ; Try to save to Filename
     if FileExist(Filename) {
@@ -219,15 +219,16 @@ dq_LoadFile(Filename?, DialogTitle := "", FileFilter := "Plain text (*.txt; *.md
     */
 
 
-    if not IsSet(Filename) {
-        ; Show the File Select dialog if Filename was not supplied.
+    if not IsSet(Filename) or Filename == "" {
+        ; Show the File Select dialog if Filename was not supplied or is blank.
+        ; This allows the programmer to pass in "" when dq_LoadFile() is called.
         Filename := FileSelect(3,, DialogTitle, FileFilter)
-    }
 
-    if Filename == "" {
-        ; If Filename was supplied, but is blank, then it's likely because the user hit Cancel in 
-        ; the File Select dialog.
-        return({path: "", contents: "", err: 1})
+        if Filename == "" {
+            ; If Filename is still blank now, then it's because the user hit Cancel in 
+            ; the File Select dialog.
+            return({path: "", contents: "", err: 1})
+        }
     }
 
     if not FileExist(Filename) {

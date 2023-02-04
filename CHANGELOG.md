@@ -8,6 +8,7 @@
 - **Deprecated**
 - **Removed**
 - **Fixed**
+    - dq_SaveFile() and dq_LoadFile() can handle the user clicking Cancel in the File Select dialog.
 - **Security**
 
 
