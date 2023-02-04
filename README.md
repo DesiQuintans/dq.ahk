@@ -6,7 +6,7 @@ My (Desi's) personal library for AutoHotkey 2 <https://www.autohotkey.com/>.
 
 ## Usage
 
-Download `dq.ahk` and `Include` it near the top of your script:
+Download `dq.ahk` and `#Include` it near the top of your script:
 
 ```
 #Requires AutoHotkey v2.0
@@ -68,3 +68,5 @@ MyFunction(RequiredArg, OptionalArg1?, OptionalArg2 := "") {
 - `dq_LoadFile([Filename, DialogTitle, FileFilter])`
     - Handles file loading with or without a File Select dialog, and handles cases where the user cancels the operation.
 
+- `EditWidthFromCols(Cols, [FontName, FontSizePt, Debug])`
+    - Calculates how wide a multiline Edit control has to be in order to fit *n* characters of text in one line. AHK already lets us size Edits by number of rows of text, but a matching option to size an Edit by character count is missing.

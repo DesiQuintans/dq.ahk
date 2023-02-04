@@ -281,3 +281,68 @@ FileNewerThan(Filename, Timestamp) {
 
     return({newer: filetime > Timestamp, mtime: filetime, err: 0})
 }
+
+
+EditWidthFromCols(Cols, FontName := "", FontSizePt := "", Debug := 0) {
+    /*
+    Calculates how wide a multiline Edit control has to be in order to fit n characters of text in 
+    one line. AHK already lets us size Edits by number of rows of text, but a matching option to 
+    size an Edit by character count is missing.
+    
+    Cols         - The number of characters that the Edit should fit on one line before wrapping.
+    [FontName]   - Calculate using a custom font. Blank ("") uses Windows' defaults.
+    [FontSizePt] - Calculate using a custom font size (integer). Blank ("") uses Windows' defaults.
+    [Debug]      - If '1', Show the test GUI and its calculated values.
+
+    Return: 
+        A number, which is the width (in pixels) that your Edit should in order to fit the number
+        of characters you asked for in 'Cols'.
+    
+    Examples:
+        ; Create an Edit that shows 90 columns and 10 rows of text.
+        Col90Width := EditWidthFromCols(90)
+
+        MyGui := Gui()
+        MyGui.Add("Edit", Format("w{1} R10"), Col90Width))
+    */
+
+    RulerGui := Gui()
+
+    ; 1. Set the font of all new controls in this GUI. Blank input reverts to Windows' defaults.
+    if FontSizePt != "" {
+        FontSizePt := "s" . FontSizePt
+    }
+    RulerGui.SetFont(FontSizePt, FontName)
+
+    ; 2. How wide is an 'm' in the chosen font?
+    EmRuler := RulerGui.Add("Text", "R1", "m")
+    EmRuler.GetPos(,, &EmWidth)
+
+    ; 3. How wide is a multi-line Edit control that is automatically sized to fit an 'm'?
+    UIRuler := RulerGui.Add("Edit", "multi R4", "m`nm`nm`nm`nm`nm`n")
+    UIRuler.GetPos(,, &EditWidth)
+    
+    ; 4. Calculate sizes
+    UIWidth    := EditWidth - EmWidth       ; Width of the Edit's scrollbar, borders, and padding.
+    nColsWidth := EmWidth * Cols            ; Text width to fit n Cols
+    
+    FinalWidth := nColsWidth + UIWidth + 1  ; Total width of desired Edit. Add 1 pixel because if 
+                                            ; the fit is TOO exact, the Edit will wrap the last 
+                                            ; character anyway.
+
+    ; 6. Optional debugging
+    if Debug == 1 {
+        RulerGui.Show()
+
+        MsgBox(Format("EmWidth: {1}`n" .
+                      "EditWidth: {2}`n" . 
+                      "UIWidth: {3}`n" . 
+                      "nColsWidth: {4}`n" . 
+                      "FinalWidth: {5}",
+                      EmWidth, EditWidth, UIWidth, nColsWidth, FinalWidth))
+    }
+
+    ; 7. Clean-up and return
+    RulerGui.Destroy()
+    return(FinalWidth)
+}

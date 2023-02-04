@@ -4,6 +4,7 @@
 
 - **Added**
     - `Basename(Filename)`
+    - `EditWidthFromCols(Cols, [FontName, FontSizePt, Debug])`
 - **Changed**
     - dq_LoadFile()'s "The file doesn't exist. Choose a different file?" dialog now has "Yes/No" options instead of "OK/Cancel".
 - **Deprecated**
