@@ -141,8 +141,7 @@ GuiToggleVisibility(GuiObj) {
 }
 
 
-dq_SaveFile(Contents, Filename?, SuggestedName := Format("{1}-{2}-{3}.txt", A_Year, A_Mon, A_MDay), 
-            DialogTitle := "", FileFilter := "Plain text (*.txt; *.md; *.markdown; *.org)") {
+dq_SaveFile(Contents, Filename?, SuggestedName := Format("{1}-{2}-{3}.txt", A_Year, A_Mon, A_MDay), DialogTitle := "", FileFilter := "Plain text (*.txt; *.md; *.markdown; *.org)") {
     /*
     Handles both Save and Save As functionality, depending on whether a Filename is set or not.
     
