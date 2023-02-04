@@ -1,5 +1,5 @@
 /*
-dq.ahk v0.1.0
+dq.ahk v0.2.0
 My personal library of general-purpose Autohotkey 2 functions.
 
 github.com/DesiQuintans/dq.ahk
@@ -51,6 +51,25 @@ ReadableFilename(Filename) {
     split_Filename := StrSplit(Filename, "\")
 
     return(split_Filename[-2] . "\" . split_Filename[-1])
+}
+
+
+Basename(Filename) {
+    /*
+    Takes a full path and returns the file's basename and extension.
+    
+    Filename  - A full path to a file.
+
+    Return:
+        String
+    
+    Examples:
+        Basename("C:\Docs\Project7\Notes.txt") -> "Notes.txt"
+    */
+
+    split_Filename := StrSplit(Filename, "\")
+
+    return(split_Filename[-1])
 }
 
 

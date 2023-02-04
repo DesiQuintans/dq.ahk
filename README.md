@@ -50,6 +50,9 @@ MyFunction(RequiredArg, OptionalArg1?, OptionalArg2 := "") {
 - `ReadableFilename(Filename)`
     - Takes a file's full path and returns its basename and parent folder for context, e.g. "C:\Docs\Project7\Notes.txt" to "Project7\Notes.txt".
 
+- `Basename(Filename)`
+    - Returns a file's basename. E.g. "C:\Docs\Project7\Notes.txt" to "Notes.txt".
+
 - `FlagTitle(GuiObj)`
     - Put a `* ` at the start of the GUI's window title. Usually used to indicate unsaved changes to the current file.
 

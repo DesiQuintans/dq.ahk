@@ -1,5 +1,16 @@
 # NEWS
 
+## v0.2.0 (2023-02-05)
+
+- **Added**
+    - `Basename(Filename)`
+- **Changed**
+- **Deprecated**
+- **Removed**
+- **Fixed**
+- **Security**
+
+
 ## v0.1.0 (2023-02-01)
 
 - **Added**
