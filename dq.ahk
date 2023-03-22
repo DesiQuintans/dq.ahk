@@ -9,19 +9,21 @@ github.com/DesiQuintans/dq.ahk
 #Requires AutoHotkey v2.0
 
 
-ReadableHotkey(KeyName) {
-    /*
-    Replaces Send() hotkey symbols with their key names, for display in Help dialogs.
-    
-    KeyName - A keyname, as you would use in Send().
-    
-    Return: 
-        String
-    
-    Examples:
-        ReadableHotkey("#s") -> "Win+S"
-    */
 
+/**
+ * Replaces Send() hotkey symbols with their key names, for display in Help dialogs.
+ *
+ * @param {String} KeyName    A keyname, as you would use in Send().  
+ *
+ * @return
+ *  {String}
+ * 
+ * @example
+ * ReadableHotkey("#s")
+ * ; "Win+S"
+ * 
+ */
+dq_ReadableHotkey(KeyName) {
     out := StrUpper(KeyName)
 
     out := StrReplace(out, "+", "Shift+") 
@@ -35,101 +37,99 @@ ReadableHotkey(KeyName) {
 }
 
 
-ReadableFilename(Filename) {
-    /*
-    Takes a full path and returns the file's basename and its parent directory (for more context).
-    
-    Filename - A full path to a file.
 
-    Return:
-        String
-    
-    Examples:
-        ReadableFilename("C:\Docs\Project7\Notes.txt") -> "Project7\Notes.txt"
-    */
 
+/**
+ * Takes a full path and returns the file's basename and its parent directory for context.
+ *
+ * @param {String} Filename    A full path to the file.
+ *
+ * @return {String}
+ * 
+ * @example
+ * ReadableFilename("C:\Docs\Project7\Notes.txt")
+ * ; "Project7\Notes.txt"
+ * 
+ */
+dq_ReadableFilename(Filename) {
     split_Filename := StrSplit(Filename, "\")
 
     return(split_Filename[-2] . "\" . split_Filename[-1])
 }
 
 
-Basename(Filename) {
-    /*
-    Takes a full path and returns the file's basename and extension.
-    
-    Filename  - A full path to a file.
-
-    Return:
-        String
-    
-    Examples:
-        Basename("C:\Docs\Project7\Notes.txt") -> "Notes.txt"
-    */
-
+/**
+ * Return a file's basename and extension.
+ *
+ * @param      {String} Filename  A full path to a file.
+ *
+ * @return     {String}
+ * 
+ * @example
+ * Basename("C:\Docs\Project7\Notes.txt")
+ * ; " Notes.txt"
+ * 
+ */
+dq_Basename(Filename) {
     split_Filename := StrSplit(Filename, "\")
 
     return(split_Filename[-1])
 }
 
 
-FlagTitle(GuiObj) {
-    /*
-    Put a * at the start of the window title in the GUI. Often used to show that a file has 
-    been edited.
-    
-    GuiObj - The GuiObj to affect.
-
-    Return: 
-        Side-effect (changes GuiObj's title)
-    
-    Examples:
-        MyGui := Gui(, "My window's title")
-
-        FlagTitle(MyGui)    ; "* My window's title"
-        UnflagTitle(MyGui)  ; "My window's title"
-    */
-
+/**
+ * @brief      Put a * at the start of a GUI's window title. Often used to show unsaved changes.
+ *
+ * @param      {GuiObj} GuiObj  The GUIObj to affect.
+ *
+ * @return     Side-effect (changes the GuiObj's title), but returns nothing.
+ * 
+ * @example
+ * MyGui := Gui(, "My window's title")
+ *
+ * FlagTitle(MyGui)    ; "* My window's title"
+ * UnflagTitle(MyGui)  ; "My window's title"
+ * 
+ */
+dq_FlagTitle(GuiObj) {
     if not RegExMatch(GuiObj.Title, "^\* ") {
         GuiObj.Title := "* " . GuiObj.Title
     }
 }
 
 
-UnflagTitle(GuiObj) {
-    /*
-    Remove * from the start of a window title in a GUI, previously set by FlagTitle().
-    
-    GuiObj - The GuiObj to affect.
-
-    Return:
-        Side-effect (Changes GuiObj's title)
-    
-    Examples:
-        MyGui := Gui(, "My window's title")
-
-        FlagTitle(MyGui)    ; "* My window's title"
-        UnflagTitle(MyGui)  ; "My window's title"
-    */
-
+/**
+ * Remove * from the start of a GUI's window title, previously set by dq_FlagTitle().
+ *
+ * @param      {GuiObj} GuiObj  The GUIObj to affect.
+ *
+ * @return     Side-effect (Changes GuiObj's title), but returns nothing.
+ * 
+ * @example
+ * MyGui := Gui(, "My window's title")
+ * 
+ * FlagTitle(MyGui)    ; "* My window's title"
+ * UnflagTitle(MyGui)  ; "My window's title"
+ * 
+ */
+dq_UnflagTitle(GuiObj) {
     GuiObj.Title := RegExReplace(GuiObj.Title, "^\* ", "")
 }
 
 
-GuiToggleVisibility(GuiObj) {
-    /*
-    Toggles whether a Gui is hidden or not hidden.
-
-    GuiObj - The GuiObj to affect.
-    
-    Return:
-        Side-effect (toggle GuiObj's visibility)
-    
-    Examples:
-        MyGui := Gui(, "My window's title")
-        #s::GuiToggleVisibility(MyGui)  ; Show/hide MyGui when Win+S is pressed.
-    */
-
+/**
+ * @brief      Toggles whether a GUI is hidden or not hidden.
+ *
+ * @param      {GuiObj} GuiObj  The GuiObj to affect.
+ *
+ * @return     Side-effect (toggle GuiObj's visibility), but returns nothing.
+ * 
+ * @example
+ * MyGui := Gui(, "My window's title")
+ * #s::GuiToggleVisibility(MyGui)  ; Show/hide MyGui when Win+S is pressed.
+ * 
+ */
+dq_GuiToggleVisibility(GuiObj) {
     If DllCall("IsWindowVisible", "Ptr", WinExist("ahk_id " . GuiObj.Hwnd))
     {
         GuiObj.Hide()
@@ -141,14 +141,26 @@ GuiToggleVisibility(GuiObj) {
 }
 
 
+/**
+ * Handles both Save and Save As functionality, depending on whether a Filename is set or not.
+ *
+ * @param      {String} Contents         The contents of the new file
+ * @param      {String} [Filename]       The target file path. If unset, show a File Select dialog.
+ * @param      {String} [SuggestedName]  A filename to pre-fill the File Select dialog with. 
+ *                                       By default, suggests a text file named with today's date.
+ * @param      {String} [DialogTitle]    A custom title for the File Select dialog.
+ * @param      {String} [FileFilter]     A filter that selects which files are visible in the dialog. 
+ *                                       See 'FileSelect' in the AHK docs for more information.
+ *
+ * @return     {Object} An object with two named values: 1
+ */
 dq_SaveFile(Contents, Filename?, SuggestedName := Format("{1}-{2}-{3}.txt", A_Year, A_Mon, A_MDay), DialogTitle := "", FileFilter := "Plain text (*.txt; *.md; *.markdown; *.org)") {
     /*
     Handles both Save and Save As functionality, depending on whether a Filename is set or not.
     
     Contents        - The contents of the new file
-    [Filename]      - The target file path. If unset, show a File Select dialog.
-    [SuggestedName] - A filename to pre-fill the File Select dialog with. By default, suggests a
-                      text file named with today's date.
+    [Filename]      - The target file path.
+    [SuggestedName] - 
     [DialogTitle]   - A custom title for the File Select dialog.
     [FileFilter]    - A filter that selects which files are visible in the dialog. See 'FileSelect' 
                       in the AHK docs for more information.
@@ -251,7 +263,7 @@ dq_LoadFile(Filename?, DialogTitle := "", FileFilter := "Plain text (*.txt; *.md
 }
 
 
-FileNewerThan(Filename, Timestamp) {
+dq_FileNewerThan(Filename, Timestamp) {
     /*
     Was the file at 'Filename' modified after 'Timestamp'?
     
@@ -277,13 +289,17 @@ FileNewerThan(Filename, Timestamp) {
         return({newer: "", mtime: "", err: 1})
     }
 
+    if (Timestamp == "") {
+    	return({newer: "", mtime: "", err: 1})
+    }
+
     filetime := FileGetTime(Filename, "M")
 
     return({newer: filetime > Timestamp, mtime: filetime, err: 0})
 }
 
 
-EditWidthFromCols(Cols, FontName := "", FontSizePt := "", Debug := 0) {
+dq_EditWidthFromCols(Cols, FontName := "", FontSizePt := "", Debug := 0) {
     /*
     Calculates how wide a multiline Edit control has to be in order to fit n characters of text in 
     one line. AHK already lets us size Edits by number of rows of text, but a matching option to 
@@ -345,4 +361,29 @@ EditWidthFromCols(Cols, FontName := "", FontSizePt := "", Debug := 0) {
     ; 7. Clean-up and return
     RulerGui.Destroy()
     return(FinalWidth)
+}
+
+
+/**
+ * Repeat a string n times
+ *
+ * @param {String} Str    A string to repeat.
+ * @param {Int} N    The number of times to repeat it.  
+ *
+ * @return
+ *  {String}
+ * 
+ * @example
+ * dq_Rep("Hi", 4)
+ * ; "HiHiHiHi"
+ * 
+ */
+dq_Rep(Str, N) {
+    out := ""
+
+    Loop N {
+        out := out . Str
+    }
+
+    return(out)
 }
